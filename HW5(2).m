@@ -1,5 +1,5 @@
 clear all; close all; clc
-
+%% Load Video 2
 v2 = VideoReader("ski_drop_low.mp4");
 vid2_dt = 1/v2.Framerate;
 vid2_t = 0:1:v2.Duration;
@@ -10,7 +10,7 @@ for i = 1:numFrames2
     X = vid2Frames(:,:,:,i);
 %    imshow(X);drawnow;
 end
-
+%% Set the size of the frame
 numRows = 500-49;
 numCols = 600-299;
 gray_vid2 = zeros(numRows, numCols, numFrames2);
@@ -27,7 +27,7 @@ width = numCols;
 
 X1 = X(:,1:end-1);
 X2 = X(:,2:end);
-
+%% Set DMD
 [U,S,V] = svd(X1,'econ');
 r = 2;
 U_r = U(:, 1:r);
@@ -47,7 +47,7 @@ omega = log(lambda)/vid2_dt;
 
 x1 =X1(:, 1);
 b = Phi \ x1;
-
+%% DMD Reconstruction
 mm1 = size(X1,2);
 time_dynamics = zeros(r,mm1);
 t = (0:mm1-1)*vid2_dt;
@@ -62,7 +62,7 @@ for k = 1:numFrames2 - 1
     figure(2);
     %imshow(frame); drawnow
 end
-
+%% Set the background and the foreground
 X_fg = X1 - abs(X_bg);
 ind = find(X_fg < 0);
 X_rec = X_bg+X_fg;
@@ -77,7 +77,7 @@ for i = 1:numFrames2 - 1
     figure(3);
     %imshow(frame); drawnow
 end
-
+%% Frame out
 figure(4)
 subplot(2,3,1)
 frame = reshape(X1(:,100),height,width); 
