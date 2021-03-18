@@ -1,5 +1,5 @@
 clear all; close all; clc
-
+%% Load Video 1
 v1 = VideoReader("monte_carlo_low.mp4");
 vid1_dt = 1/v1.Framerate;
 vid1_t = 0:1:v1.Duration;
@@ -16,7 +16,7 @@ for i = 1:numFrames1
     X = vid1Frames(:,:,:,i);
 %    imshow(X);drawnow;
 end
-
+%% Set the size of the frame
 numRows = 500-49;
 numCols = 600-299;
 gray_vid1 = zeros(numRows, numCols, numFrames1);
@@ -33,7 +33,7 @@ width = numCols;
 
 X1 = X(:,1:end-1);
 X2 = X(:,2:end);
-
+%% Setup DMD
 [U,S,V] = svd(X1,'econ');
 r = 2;
 U_r = U(:, 1:r);
@@ -53,7 +53,7 @@ omega = log(lambda)/vid1_dt;
 
 x1 =X1(:, 1);
 b = Phi \ x1;
-
+%% DMD Reconstruction
 mm1 = size(X1,2);
 time_dynamics = zeros(r,mm1);
 t = (0:mm1-1)*vid1_dt;
@@ -68,7 +68,7 @@ for k = 1:numFrames1 - 1
     figure(2);
     %imshow(frame); drawnow
 end
-
+%% Set the foreground and the background
 X_fg = X1 - abs(X_bg);
 ind = find(X_fg < 0);
 X_rec = X_fg+X_bg;
@@ -83,7 +83,7 @@ for i = 1:numFrames1 - 1
     figure(3);
     %imshow(frame); drawnow
 end
-
+%% Frame out
 figure(4)
 subplot(2,3,1)
 frame = reshape(X1(:,100),height,width); 
